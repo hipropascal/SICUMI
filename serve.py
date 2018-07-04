@@ -1,16 +1,10 @@
 import os
-import json
-import time
 import math
-import datetime
 import threading
-from flask_cors import CORS
-from urllib import request
 from flask_socketio import SocketIO
 from netCDF4 import Dataset, num2date
-from flask import Flask, render_template, jsonify, send_file, make_response
+from flask import Flask, render_template, jsonify, send_file
 from src.test import ship_ais
-from src.misc import logger
 from src.controller import ctl_wrf, ctl_inawave, ctl_inaflow
 
 app = Flask(__name__)
@@ -19,7 +13,6 @@ socketio = SocketIO(app)
 dir = os.path.dirname(os.path.realpath(__file__))
 apikey = 'AIzaSyDlSvUq8WK9GGXaj4OT9XAxEvPclrKqUIU'
 time_ctr = 0
-
 
 @socketio.on('test')
 def handle_my_custom_namespace_event(datstr):
@@ -103,6 +96,4 @@ if __name__ == '__main__':
         t = threading.Thread(target=thread)
         t.daemon = True
         t.start()
-    # ina_flow = Dataset(dir + '\\data\\prediction\\wrf\\semar_latest.nc', 'r', format="NETCDF4")
-    # ina_wave = Dataset(dir + '\\data\\prediction\\wrf\\semar_latest.nc', 'r', format="NETCDF4")
     socketio.run(app, port=8090, debug=True, host="0.0.0.0")
