@@ -1,0 +1,192 @@
+<html>
+<head>
+    <title>SICUMI-BMKG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <link rel="icon" type="image/png" href="/static/image/ico.png"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="/static/dist/leaflet/leaflet.css">
+    <link rel="stylesheet" href="/static/dist/fawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body style="width: 100%;height: 100%;position:absolute;overflow: hidden;padding: 0;margin: 0">
+<div class="fullscreen" id="main">
+    <div class="fullscreen unclickable" id="map-basemap" style="z-index: 1"></div>
+    <div class="fullscreen unclickable" id="map-raster" style="z-index: 3">
+        <canvas id="cvs-raster" style="opacity: .5"></canvas>
+    </div>
+    <div class="fullscreen unclickable" id="map-animate" style="z-index: 4;opacity: .3">
+        <canvas id="cvs-animate"></canvas>
+    </div>
+    <div class="fullscreen unclickable" id="map-datalayer" style="z-index: 4; opacity: 0">
+        <canvas id="cvs-data"></canvas>
+    </div>
+    <div class="fullscreen clickable" id="map-coastline" style="z-index: 5;background: none">
+        <div class="fullscreen unclickable" id="map-fish-info" style="z-index: 6;"></div>
+    </div>
+    <div class="fullscreen unclickable" id="nav" style="z-index: 1000">
+        <div id="xpos"
+             style="position:absolute; width: 2px;height: 100%; background-color: rgba(255,255,255,0.6); opacity: 1;color: white">
+            <div class="ship-info-dms-lng" style="">
+                000°00'00.0"
+            </div>
+        </div>
+        <div id="ypos"
+             style="position:absolute; height: 2px;width: 100%; background-color: rgba(255,255,255,0.6); opacity: 1;color: white">
+            <div class="ship-info-dms-lat" style="">
+                000°00'00.0"
+            </div>
+            <div class="ship-info-speed-deg">
+                0 knot 0 deg
+            </div>
+        </div>
+        <div id="logo-wraper">
+            <div id="logo">
+                <img src="/static/image/logo.png" width="290" alt="" style="float: left">
+            </div>
+            <img src="/static/image/logobmkg.png" width="80" alt="" style="position: absolute; top: -82px; right: 279px;opacity: 0.7">
+        </div>
+        <div id="marker-legend" class="clickable">
+            <div class="content-header drag"><i class="fa fa-bars" aria-hidden="true"></i> Legenda</div>
+            <div class="legend-header"> Kapal & Pelabuhan</div>
+            <ul class="legend-sub">
+                <li class="legend-item">
+                    <img width="32" src="/static/image/ship/fishing.svg" alt="">
+                    <div class="label">Ikan</div>
+                    <img width="32" src="/static/image/ship/passanger.svg" alt="">
+                    <div class="label">Trans</div>
+                    <img width="32" src="/static/image/ship/cargo.svg" alt="">
+                    <div class="label">Kargo</div>
+                    <img width="32" src="/static/image/ship/tanker.svg" alt="">
+                    <div class="label">Tanker</div>
+                    <img width="32" src="/static/image/ship/other.svg" alt="">
+                    <div class="label">Lainnya</div>
+                </li>
+                <li class="legend-item">
+                    <img width="32" src="/static/image/ship/tug.svg" alt="">
+                    <div class="label">Tug</div>
+                    <img width="32" src="/static/image/ship/hsc.svg" alt="">
+                    <div class="label">Cepat</div>
+                    <img width="32" src="/static/image/ship/military.svg" alt="">
+                    <div class="label">Militer</div>
+                    <img width="32" src="/static/image/ship/pleasure.svg" alt="">
+                    <div class="label">Wisata</div>
+                    <img width="35" src="/static/image/ship/special.svg" alt="">
+                    <div class="label">Spesial</div>
+                </li>
+            </ul>
+            <!--<div class="legend-header"> Pelabuhan</div> -->
+            <ul class="legend-sub">
+                <li class="legend-item">
+                    <img width="40" src="/static/image/port1.png" alt="">
+                    <div class="label" style="width: 150px;margin-left: 10px">Utama</div>
+                    <img width="30" src="/static/image/port3.png" alt="">
+                    <div class="label" style="margin-left: 10px">Pengumpan</div>
+                </li>
+            </ul>
+            <div id="info-legend" class="clickable">
+                <div class="legend-header" style="text-align: left">
+                    <span class="raster-title"></span>&nbsp;<span class="cur-time"
+                                                                  style="float: right;margin-right: 5px"></span><span
+                        class="pred-time" style="float: right;margin-right: 5px"></span>
+                </div>
+                <div style="width: 100%;text-align: center;margin-top: 5px;display: flex;align-items: center;justify-content: center;">
+                </div>
+                <div class="legend-container">
+                    <img class="legend" src="/static/image/legendtmp.png" alt="" width="300" height="10">
+                    <div class="lm lm-1"></div>
+                    <div class="lm lm-2"></div>
+                    <div class="lm lm-3"></div>
+                    <div class="lv lv-1">&nbsp;<span class="legend-value-1">00000</span>&nbsp;<span
+                            class="raster-unit"></span></div>
+                    <div class="lv lv-2">&nbsp;<span class="legend-value-2">00000</span>&nbsp;<span
+                            class="raster-unit"></span></div>
+                    <div class="lv lv-3"><span class="legend-value-3">00000</span> <span class="raster-unit"></span>
+                    </div>
+                </div>
+                <div style="width: 100%;text-align: center;margin-top: 5px;display: flex;align-items: center;justify-content: center;">
+                    <div class="cur-time-custom"></div>
+                </div>
+            </div>
+        </div>
+        <div class="legend-header"
+             style="position: absolute;bottom: 10px; width: 100%; display: none; visibility: hidden">
+            <div style="display: inline-block">
+                <select class="pred-add-hour wrf-time">
+                    <option value="true">Saat ini</option>
+                </select>
+                <select class="pred-add-hour hycom-time">
+                    <option value="true">Hari ini</option>
+                </select>
+            </div>
+        </div>
+        <div id="marker-legend2" class="clickable">
+            <div class="content-header drag"><i class="fa fa-bars" aria-hidden="true"></i> Cuaca Laut</div>
+            <div id="p-rain" group="wrf" class="btn-icon param raster prediction active-false"
+                 title="Prediksi Hujan" unit="mm/jam" value="false">
+            </div>
+            <div id="p-wind" group="inawave" class="btn-icon param raster prediction active-true"
+                 title="Prediksi Angin" unit="m/s" value="true">
+            </div>
+            <div id="p-current" group="inaflow" class="btn-icon param raster prediction active-false"
+                 title="Prediksi Arus Laut" unit="cm/s" value="false">
+            </div>
+            <div id="p-wave" group="inawave" class="btn-icon param raster prediction active-false"
+                 title="Prediksi Gelombang Laut" unit="m/s" value="false">
+            </div>
+        </div>
+        <div id="marker-legend3" class="clickable">
+            <div class="content-header drag"><i class="fa fa-bars" aria-hidden="true"></i> Kapal BMKG001</div>
+            <div class="legend-header"> Waktu</div>
+            <div id="timer_utc" style="width: 100%;font-size: 30px;text-align: center">00:00:00 UTC</div>
+            <div style="width: 100%;height: 22px">
+                <div id="timer_wib" class="time-indonesia">00:00:00 WIB</div>
+                <div id="timer_wit" class="time-indonesia">00:00:00 WIT</div>
+            </div>
+            <div id="timer_wita" style="width: 100%;font-size: 17px;text-align: center; margin-bottom: 5px">00:00:00
+                WITA
+            </div>
+            <div class="legend-header"> Navigasi</div>
+            <div>
+                <div class="ship-info-dms" style="font-size: 20px;text-align: left;    margin: 5px 0px 0px 10px;">
+                    000°00'00.0"S 000°00'00.0"E
+                </div>
+                <div id="ship-info-speeddir" style="font-size: 20px;text-align: left;    margin: 5px 0px 5px 10px;">00
+                    Knot - 0°
+                </div>
+            </div>
+            <div class="legend-header"> Cuaca Di Area Kapal</div>
+            <div class="ship-weather ship-weather-ico">
+                <img style="float: left; margin-right: 10px" src="/static/image/rain.png" alt="" width="30">
+                <div class="ship-weather-rain" style="float: left;margin-top: 4px"></div>
+            </div>
+            <div class="ship-weather ship-weather-ico">
+                <img style="float: left; margin-right: 10px" src="/static/image/wind.png" alt="" width="30">
+                <img class="ship-weather-wind-dir" src="/static/image/dir.png" style="float: right" width="30" alt="">
+                <div class="ship-weather-wind" style="float: left;margin-top: 4px"></div>
+            </div>
+            <div class="ship-weather ship-weather-ico">
+                <img style="float: left; margin-right: 10px" src="/static/image/current.png" alt="" width="30">
+                <img class="ship-weather-current-dir" src="/static/image/dir.png" style="float: right" width="30"
+                     alt="">
+                <div class="ship-weather-current" style="float: left;margin-top: 4px"></div>
+            </div>
+            <div class="ship-weather ship-weather-ico">
+                <img style="float: left; margin-right: 10px" src="/static/image/wave.png" alt="" width="30">
+                <img class="ship-weather-wave-dir" src="/static/image/dir.png" style="float: right" width="30" alt="">
+                <div class="ship-weather-wave" style="float: left;margin-top: 4px"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script src="/static/dist/jquery/jquery-3.2.1.min.js"></script>
+<script src="/static/dist/jquery/jquery-ui.js"></script>
+<script src="/static/dist/leaflet/leaflet.js"></script>
+<script src="/static/dist/leaflet/L.Map.Sync.js"></script>
+<script src="/static/js/js.cookie.js"></script>
+<script src="/static/js/leaflet-heat.js"></script>
+<script src="/static/js/misc.js"></script>
+<script src="/static/js/func.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+python : 'C:\ProgramData\Anaconda3\python.exe'
+rootdir : 'C:\Users\DevHero\Desktop\SEMARSERVER\'
+dbconnect :
+  host : '127.0.0.1'
+  port : '5432'
+  dbname : 'semar'
+  user : 'postgres'
+  password : 'edb4ever'
+zppi : 'data/satelite/ZPPI/'
+ais : 'data/satelite/LAPAN/'
