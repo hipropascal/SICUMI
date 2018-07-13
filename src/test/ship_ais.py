@@ -11,15 +11,15 @@ class Ship:
     route = []
     speed = 5
     coor = []
-    timespeed = 20  # times
+    timespeed = 1  # times
     d_seg = []
     d_ac_seg = []
     d_progress = 0
     c_seg = 0
-    min_speed = 7
-    max_speed = 15
-    min_update = 1  # nautical mile
-    max_update = 1.5  # nautical mile
+    min_speed = 5
+    max_speed = 7
+    min_update = 1.  # nautical mile
+    max_update = 2.  # nautical mile
     timestamp = 0
 
     def __init__(self, route):
@@ -31,7 +31,7 @@ class Ship:
 
     def simul(self, emit):
         while True:
-            rep = self.move(1 + random.random())
+            rep = self.move(0.1)
             if rep['status'] == 'idle':
                 break
             emit('test', rep, broadcast=True)
@@ -43,9 +43,9 @@ class Ship:
             return {'status': 'idle', 'speed': 0, 'position': [0, 0]}
         speed = self._rand_speed(self.speed)  # Generate increase max 1 knot or decrease max1 knot
         delay_report = self._time_needed(distance, speed)
-        # print('report on ', delay_report, 'hour')
-        time.sleep(delay_report * 360 / self.timespeed)
-        # time.sleep(1)
+        # time.sleep(delay_report * 360 / self.timespeed)
+        time.sleep(0.5)
+        print(delay_report * 360 / self.timespeed)
         self.d_progress = self.d_progress + distance
         position = self._distance_to_coor(self.d_progress)
         dirc = self._get_heading(self.route[self.c_seg], position)
@@ -205,7 +205,7 @@ if __name__ == '__main__':
     while True:
         report = bmkgship.move(1 + random.random())
         if report['status'] == 'idle':
-            print('Plotting')
+            # print('Plotting')
             m = Basemap(projection='mill',
                         urcrnrlat=-3.287360,
                         urcrnrlon=119.950155,
@@ -220,4 +220,3 @@ if __name__ == '__main__':
             break
         lats.append(report['position'][0])
         lons.append(report['position'][1])
-        print(report)

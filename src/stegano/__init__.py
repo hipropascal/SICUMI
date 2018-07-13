@@ -1,5 +1,29 @@
 from PIL import Image, ImageDraw
 import numpy as np
+from numba import jit, cuda
+
+
+def encode_uv_image_refactory(U, V, bound):
+    maxU = np.max(U)
+    minU = np.min(U)
+    maxV = np.max(V)
+    minV = np.min(V)
+    width = U.shape[1]
+    height = U.shape[0]
+    arr_blue = np.full((height, width), 0, dtype=np.uint8).flatten()
+    arr_alpha = np.full((height, width), 255, dtype=np.uint8).flatten()
+    Uscale = (maxU - minU) / 255
+    Vscale = (maxV - minV) / 255
+    uscaled = np.divide(np.add(U, abs(minU)), Uscale).flatten()
+    vscaled = np.divide(np.add(V, abs(minV)), Vscale).flatten()
+    join_arr = np.vstack((uscaled, vscaled, arr_blue, arr_alpha)).T
+    join_arr = join_arr.reshape(height, width, 4)
+    arr = np.flipud(join_arr).astype(dtype=np.int8)
+    img = Image.fromarray(arr, 'RGBA')
+    # UV|minU|maxU|minV|maxV|TOP|BOTTOM|LEFT|RIGHT
+    info = "UV|{}|{}|{}|{}|{}|{}|{}|{}xxxx".format(minU, maxU, minV, maxV, bound["top"], bound["bottom"], bound["left"],
+                                                   bound["right"])
+    return add_info(img, info)
 
 
 def encode_uv_image(U, V, bound):
@@ -100,6 +124,7 @@ def add_info(img, info):
 
 if __name__ == '__main__':
     from netCDF4 import Dataset, num2date
+
     flow = Dataset('..\\..\\data\\prediction\\inaflow\\file.nc', 'r', format="NETCDF4")
     lat = flow.variables["lat"][:]
     lng = flow.variables["lon"][:]
@@ -111,5 +136,5 @@ if __name__ == '__main__':
     }
     u = flow.variables["u"][1][:]
     v = flow.variables["v"][1][:]
-    img = encode_uv_image(u,v,bound)
+    img = encode_uv_image(u, v, bound)
     img.show()

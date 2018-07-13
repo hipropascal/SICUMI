@@ -5,7 +5,6 @@ from netCDF4 import Dataset, num2date
 
 
 def get_raster(type, dset, hour):
-    print(dset.variables)
     lat = dset.variables["lat"][:]
     lng = dset.variables["lon"][:]
     image_result = None
@@ -50,9 +49,6 @@ def get_point_data(dset, type, lat, lng, hour):
     ratio_lng = (float(lng) - left) / (right - left)
     ypos = floor(lats.shape[0] * ratio_lat)
     xpos = floor(lngs.shape[0] * ratio_lng)
-    print({xpos, ypos})
-    print({lat, lng})
-    print({lats[ypos], lngs[xpos]})
     if type == "wave":
         dir = dset.variables["dir"][hour][ypos][xpos]
         hs = dset.variables["hs"][hour][ypos][xpos]

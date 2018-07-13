@@ -39,3 +39,20 @@ def get_point_data(dset,type,lat,lng,hour):
         rad = math.atan2(u, v)
         deg = rad * 180 / math.pi
         return {"dir": str(deg), "mag": str(mag)}
+
+
+def update_all(dset):
+    lat = dset.variables["lat"][:]
+    lng = dset.variables["lon"][:]
+    image_result = None
+    bound = {
+        "top": np.max(lat),
+        "bottom": np.min(lat),
+        "left": np.min(lng),
+        "right": np.max(lng)
+    }
+    if type == "current":
+        u = dset.variables["u"][hour][0][:]
+        v = dset.variables["v"][hour][0][:]
+        image_result = image.encode_uv_image(u, v, bound)
+    return image_result

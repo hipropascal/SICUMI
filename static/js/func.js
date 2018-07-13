@@ -6,41 +6,6 @@ var partArr = new Array(particles * 3).fill(0);
 var socket = io('');
 var hourPred = 0;
 var playLoad, moveFps, shipMark;
-var surabaya_makasar = [
-    [-7.19636, 112.73352],
-    [-7.19351, 112.73792],
-    [-7.18269, 112.74393],
-    [-7.17903, 112.75319],
-    [-7.17699, 112.76049],
-    [-7.17541, 112.78298],
-    [-7.17452, 112.82684],
-    [-7.17895, 112.86374],
-    [-7.20416, 112.93653],
-    [-7.22970, 113.01343],
-    [-7.25150, 113.10270],
-    [-7.26649, 113.19230],
-    [-7.27466, 113.29873],
-    [-7.28624, 113.41375],
-    [-7.30054, 113.61287],
-    [-7.32336, 114.05865],
-    [-7.31757, 114.37588],
-    [-7.28266, 114.63543],
-    [-7.23771, 114.77997],
-    [-7.19717, 114.86100],
-    [-7.13927, 114.92486],
-    [-6.66134, 115.27870],
-    [-6.54128, 115.46067],
-    [-5.42518, 117.99724],
-    [-5.20075, 118.50074],
-    [-5.13916, 118.73681],
-    [-5.11317, 118.86251],
-    [-5.10154, 118.93860],
-    [-5.08376, 119.04743],
-    [-5.08068, 119.22905],
-    [-5.09797, 119.36477],
-    [-5.11267, 119.40768]
-];
-
 var surabaya_balikpapan = [
 [-7.19662, 112.73243],
 [-7.17868, 112.70716],
@@ -61,7 +26,6 @@ var surabaya_balikpapan = [
 [-1.28466, 116.79898],
 [-1.27385, 116.80500]
 ];
-
 function loadMap() {
     var mappos = (function () {
         var mapCookies = Cookies.getJSON("map");
@@ -85,7 +49,7 @@ function loadMap() {
         iconSize: [30, 30],
         iconAnchor: [15, 30]
     });
-    var polyline = L.polyline(surabaya_balikpapan, {color: 'white', opacity: 0.5, dashArray: [5, 5]}).addTo(map2);
+    var polyline = L.polyline(surabaya_balikpapan, {color: 'white', opacity: 0.5, className: 'route'}).addTo(map2);
     L.marker([-5.113580, 119.409920], {icon: port1}).addTo(map2); // Makasar
     L.marker([-7.197852, 112.732807], {icon: port1}).addTo(map2); // Tanjung Perak
     L.marker([-6.104451, 106.882852], {icon: port1}).addTo(map2); // Tanjung Priok

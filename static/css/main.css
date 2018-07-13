@@ -833,3 +833,13 @@ label:hover:before {
     -webkit-animation: rotating 2s linear infinite;
 }
 
+.route {
+  stroke-dasharray: 10;
+  animation: dash 60s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
