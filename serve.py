@@ -4,6 +4,8 @@ import threading
 from flask_socketio import SocketIO
 from flask import Flask, render_template, jsonify, send_file
 from src.test import ship_ais
+from sqlalchemy.orm import sessionmaker
+from src.db.dbscheme import RasterData, RasterImage, db_connect
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -32,8 +34,11 @@ def get_raster(filename):
     return send_file("/raster/"+filename, mimetype='image/png')
 
 
-@app.route('/get_raster_catalog')
-def get_catalog(filename):
+@app.route('/get_raster_catalog/<last_update>')
+def get_catalog(last_update):
+    DBSession = sessionmaker(bind=db_connect())
+    session = DBSession()
+    data = session.query(RasterData).filter(RasterData.filename.like("%{}%".format(inawave_basename))).count()
     return send_file("/raster/"+filename, mimetype='image/png')
 
 
